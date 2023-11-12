@@ -1,5 +1,4 @@
 package com.example.spring_booking_bot;
-
 import com.example.spring_booking_bot.commands.LoginCommand;
 import com.example.spring_booking_bot.commands.WorkerCommand;
 import org.springframework.stereotype.Component;
@@ -11,13 +10,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
-
 
     @Override
     public String getBotUsername() {
@@ -32,7 +31,7 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         KeyboardRow k = new KeyboardRow();
-            k.add(new KeyboardButton("Log in"));
+        k.add(new KeyboardButton("Log in"));
 
         k.add(new KeyboardButton("Записаться к врачу"));
         SendMessage sendMessage = new SendMessage();
@@ -42,21 +41,20 @@ public class Bot extends TelegramLongPollingBot {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(Collections.singletonList(k));
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
-
-        List<WorkerCommand>workerCommandList = new ArrayList<>();
-        workerCommandList.add(new LoginCommand());
-
-        for(WorkerCommand w : workerCommandList){
-            if(w.start(update)!=null){
+        List<WorkerCommand> list = new ArrayList<>();
+        list.add(new LoginCommand());
+        for (WorkerCommand w : list) {
+            if (w.start(update) != null) {
                 sendMessage = w.start(update);
                 break;
             }
-        }
-
-        try{
+        try {
             execute(sendMessage);
-        }catch (TelegramApiException telegramApiException){
-            telegramApiException.printStackTrace();
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
         }
     }
 }
+
+
